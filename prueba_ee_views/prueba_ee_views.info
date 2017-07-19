@@ -1,0 +1,14 @@
+name = Prueba ee Views
+description = Views created for prueba el espectador
+core = 7.x
+package = Features
+version = 7.x-1.0
+dependencies[] = test_el_espectador
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = views_php
+dependencies[] = features
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = report
+features_exclude[dependencies][ctools] = ctools

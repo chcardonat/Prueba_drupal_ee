@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Prueba ee Views feature.
+ */
+
+include_once 'prueba_ee_views.features.inc';

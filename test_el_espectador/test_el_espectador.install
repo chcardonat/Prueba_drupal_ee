@@ -1,0 +1,66 @@
+<?php
+/**
+* Sets up the database schema for the new form data
+* Implements hook_schema()
+*/
+function test_el_espectador_schema() {
+$schema = array();
+
+// Our table is an array with fields and properties
+$schema['test_el_espectador'] = array(
+'description' => t('Person\'s Information'),
+'fields' => array(
+     'id'  => array(
+       'type' => 'serial',
+       'not null' => TRUE,
+       'description' => 'Primary Key: Unique register ID.',
+     ),
+'person_id' => array(
+'description' => t('identification number'),
+'type' => 'int',
+'size' => 'big',
+'not null' => TRUE
+),
+'first_name' => array(
+'description' => t('person first name.'),
+'type' => 'varchar',
+'length' => 64,
+'not null' => TRUE
+),
+'last_name' => array(
+'description' => t('person last name'),
+'type' => 'varchar',
+'length' => 64,
+'not null' => TRUE
+),
+
+'work_summary' => array(
+'description' => t('person work experience'),
+'type' => 'text',
+'not null' => TRUE
+),
+'wage_aspiration' => array(
+'description' => t('person wage aspiration'),
+'type' => 'int',
+'size' => 'big',
+'not null' => TRUE
+),
+'birth_date' => array(
+'description' => t('person birth date'),
+'type' => 'int',
+'size' => 'big',
+'not null' => TRUE
+)
+
+),
+'primary_key' => array('id'),
+'indexes' => array(
+       'id' => array('id'),
+ 'person_id' => array('person_id'),
+ 'first_name' => array('first_name'),
+ 'last_name' => array('last_name'),
+)
+
+);
+return $schema;
+}

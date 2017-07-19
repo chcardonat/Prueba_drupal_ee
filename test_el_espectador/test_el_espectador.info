@@ -1,0 +1,7 @@
+core = 7.x
+name = "test_el_espectador"
+description = "A module for send information from a form to a database"
+
+files[]= test_el_espectador.info
+files[]= test_el_espectador.install
+files[]= test_el_espectador.module

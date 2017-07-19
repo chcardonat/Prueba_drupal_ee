@@ -1,0 +1,204 @@
+    <?php
+    /**
+     * Implements hook_menu()
+     */
+    function test_el_espectador_menu() {
+    	// Sets up a url for a page the form will be accessible from at /my_module
+    	$items['test_el_espectador/inscripcion'] = array(
+    		'title' => 'Formulario de Registro de Aspirantes',
+    		'description' => 'Este formulario permite guardar información sobre los aspirantes',
+    		'page callback' => 'drupal_get_form',
+    		'page arguments' => array('test_el_espectador_form'),
+    		'access arguments' => array('access content'),
+		'type'=> MENU_CALLBACK,
+		
+    	);
+    	
+    	return $items;
+    }
+     
+    /**
+     * Implements hook_form()
+     */
+    function test_el_espectador_form($form, &$form_state) {
+
+	$form['person_id'] = array(
+    		'#title' => t('Cédula'),
+    		'#description' => t('Cédula del aspirante'),
+    		'#type' => 'textfield',
+    		'#required' => TRUE,
+    	);
+    	$form['first_name'] = array(
+    		'#title' => t('Nombres'),
+    		'#description' => t('Nombres del Aspirante'),
+    		'#type' => 'textfield',
+    		'#required' => TRUE,
+    	);
+     
+    	$form['last_name'] = array(
+    		'#title' => t('Apellidos'),
+    		'#description' => t('Apellidos del Aspirante'),
+    		'#type' => 'textfield',
+    		'#required' => TRUE,
+    	);
+
+	$form['birth_date'] = array(
+	    		'#title' => t('Fecha de Nacimiento'),
+	    		'#description' => t('Fecha de Nacimiento del aspirante'),
+	    		'#type' => 'date',
+	    		'#required' => TRUE,
+    	);
+
+	$form['work_summary'] = array(
+    		'#title' => t('Experiencia Laboral'),
+    		'#description' => t('Breve descripción de su experiencia laboral'),
+    		'#type' => 'textarea',
+    		'#required' => TRUE,
+    	);
+
+	$form['wage_aspiration'] = array(
+    		'#title' => t('Aspiración Salarial'),
+    		'#description' => t('Aspriacion Salarial.Ejemplo: 1000000, solo valores enteros'),
+    		'#type' => 'textfield',
+    		'#required' => TRUE,
+    	);
+     
+    	$form['submit'] = array(
+      		'#type' => 'submit',
+      		'#value' => t('Enviar'),
+    	);
+    	
+    	return $form;
+    }
+  
+    function test_el_espectador_form_validate($form, &$form_state) {
+    	if (!is_numeric($form_state['values']['wage_aspiration']))  {
+	   form_set_error('wage_aspiration',t('Solo puede ingresar valores numéricos'));
+	}
+    }
+     
+    function test_el_espectador_form_submit($form, &$form_state){
+
+	    $data = new stdClass();
+		$data->person_id = $form_state['values']['person_id'];	
+		$data->first_name = $form_state['values']['first_name'];
+		$data->last_name = $form_state['values']['last_name'];
+		$data->birth_date = $form_state['values']['birth_date'];
+		$data->birth_date['month']=$data->birth_date['month']<10?'0'.$data->birth_date['month']:$data->birth_date['month'];
+		$data->birth_date['day']=$data->birth_date['day']<10?'0'.$data->birth_date['day']:$data->birth_date['day'];
+		$data->birth_date = strtotime($data->birth_date['year'].'-'.$data->birth_date['month'].'-'.$data->birth_date['day']);
+		$data->work_summary = $form_state['values']['work_summary'];
+		$data->wage_aspiration = $form_state['values']['wage_aspiration'];
+		
+		
+	 
+		if (drupal_write_record('test_el_espectador',$data)){
+			drupal_set_message(t('datos correctos, te estaremos llamando'));	
+		}		
+    }
+
+
+/** * Implements hook_views_api(). */ 
+	function test_el_espectador_views_api() { 
+		return array( 'api' => 3, 'path' => drupal_get_path('module', 'test_el_espectador') . '/includes/views', ); 
+	}
+
+
+
+	function test_el_espectador_views_data(){
+		$data['test_el_espectador']['table']['group'] = t('Aspirant Record Table');
+		$data['test_el_espectador']['table']['base'] = array (
+			'field' => 'id',
+			'title' => t('Aspirant Table'),
+			'weight' => -10,
+		);
+
+		 $data['test_el_espectador']['person_id'] = array(
+			'title' => t('Aspirant Id'),
+			'field' => array(
+			'handler' => 'views_handler_field',
+			'click sortable' => TRUE
+			),
+			'sort' => array(
+			'handler' => 'views_handler_sort',
+			),
+			'filter' => array(
+			'handler' => 'views_handler_filter_numeric',
+			)
+		);
+
+		 $data['test_el_espectador']['first_name'] = array(
+		    'title' => t('Aspirant first name'),
+		    'field' => array(
+		    'handler' => 'views_handler_field',
+		    'click sortable' => TRUE,
+			),
+		    'sort' => array(
+		    'handler' => 'views_handler_sort',
+		    ),
+		    'filter' => array(
+		    'handler' => 'views_handler_filter_string',
+		    )
+		  );
+
+		 $data['test_el_espectador']['last_name'] = array(
+		    'title' => t('Aspirant last name'),
+		    'field' => array(
+		    'handler' => 'views_handler_field',
+		    'click sortable' => TRUE,
+			),
+		    'sort' => array(
+		    'handler' => 'views_handler_sort',
+		    ),
+		    'filter' => array(
+		    'handler' => 'views_handler_filter_string',
+		    )
+		  );
+
+		 $data['test_el_espectador']['work_summary'] = array(
+		    'title' => t('Aspirant Work sumary'),
+		    'field' => array(
+		    'handler' => 'views_handler_field',
+		    'click sortable' => TRUE, 
+		    ),
+		    'sort' => array(
+		    'handler' => 'views_handler_sort',
+		    ),
+		    'filter' => array(
+		    'handler' => 'views_handler_filter_string',
+		    )
+		  );
+
+		 $data['test_el_espectador']['wage_aspiration'] = array(
+		    'title' => t('Aspirant wage aspiration'),
+		    'field' => array(
+		    'handler' => 'views_handler_field_numeric',
+		    'click sortable' => TRUE,
+		    ),
+		    'sort' => array(
+		    'handler' => 'views_handler_sort',
+		    ),
+		    'filter' => array(
+		    'handler' => 'views_handler_filter_numeric',
+		    )
+		    );
+
+		 $data['test_el_espectador']['birth_date'] = array(
+		    'title' => t('Aspirant Brith date'),
+		    'field' => array(
+		    'handler' => 'views_handler_field_numeric',
+		    'click sortable' => TRUE,
+		    ),
+		    'sort' => array(
+		    'handler' => 'views_handler_sort',
+		    ),
+		    'filter' => array(
+		    'handler' => 'views_handler_filter_numeric',
+		    )
+		  );
+
+		 return $data;
+		}
+	
+	
+	
